@@ -20,7 +20,6 @@ var webpackConfig = {
 	plugins: []
 };
 
-//----- entry and output ------
 $webpackMultiEntryResolve(webpackConfig, {
 	rootPath : root,
 	entryPath : $path.join(root, 'entry')

@@ -3,6 +3,10 @@ webpack多入口文件处理
 
 ## Getting Started
 
+```shell
+npm install webpack-multi-entry-resolve --save-dev
+```
+
 __examples__
 
 ```js
@@ -30,7 +34,6 @@ var webpackConfig = {
 	plugins: []
 };
 
-//----- entry and output ------
 $webpackMultiEntryResolve(webpackConfig, {
 	rootPath : root,
 	entryPath : $path.join(root, 'entry')
