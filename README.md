@@ -40,7 +40,7 @@ module.exports = webpackConfig;
 
 ```
 
-### options
+## options
 
 #### options.rootPath
 
@@ -67,6 +67,10 @@ Type: `Array`
 	}
 ]
 ```
+
+## Release History
+
+ * 2016-10-08 v0.1.0 发布第一个正式版。
 
 
 
