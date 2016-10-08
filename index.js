@@ -1,17 +1,30 @@
 var $path = require('path');
 var $fs = require('fs');
+var $walkSync = require('walk-sync');
 
-function webpackPathResolve(webpackConfig, options){
+function multiEntryResolve(webpackConfig, options){
 
 	var conf = {
-		'entryPath' : './entry',
-		'rootPath' : './'
+		'entryPath' : './',
+		'rootPath' : process.cwd(),
+		'filters' : [
+			function(file){
+				return $path.extname(file) === '.js';
+			}
+		]
 	};
+
+	options = options || '';
+	conf.entryPath =  options.entryPath || conf.entryPath;
+	conf.rootPath = options.rootPath || conf.rootPath;
+	conf.filters = options.filters || conf.filters;
 
 	var includes = [];
 
-	var targetPath = $path.join($CONFIG.src, 'entry');
-	var files = $util.walkSync(targetPath);
+	var targetPath = conf.entryPath;
+	var files = $walkSync(targetPath, {
+		directories: false
+	});
 
 	var getEntryKey = function(path){
 		var extname = $path.extname(path);
@@ -23,15 +36,22 @@ function webpackPathResolve(webpackConfig, options){
 
 	var getEntryVal = function(path){
 		var extname = $path.extname(path);
-		var val = $path.relative($CONFIG.root, path);
+		var val = $path.relative(conf.rootPath, path);
 		val = val.replace(new RegExp(extname + '$'), '');
 		val = val.replace(/\\+/g, '/');
 		return './' + val;
 	};
 
-	files.filter(function(file){
-		return $path.extname(file) === '.js';
-	}).forEach(function(path){
+	if(Array.isArray(conf.filters)){
+		conf.filters.forEach(function(fn){
+			if(typeof fn === 'function'){
+				files = files.filter(fn);
+			}
+		});
+	}
+
+	files.forEach(function(path){
+		path = $path.resolve(targetPath, path);
 		var key = getEntryKey(path);
 		var val = getEntryVal(path);
 		includes.push(key);
@@ -43,8 +63,10 @@ function webpackPathResolve(webpackConfig, options){
 		}
 	});
 
+	webpackConfig.context = conf.rootPath;
+
 	return webpackConfig;
 
 }
 
-module.exports = webpackPathResolve;
+module.exports = multiEntryResolve;

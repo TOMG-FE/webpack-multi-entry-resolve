@@ -18,5 +18,8 @@
   "homepage": "https://github.com/TOMG-FE/webpack-multi-entry-resolve#readme",
   "devDependencies": {
     "webpack": "^1.13.2"
+  },
+  "dependencies": {
+    "walk-sync": "^0.3.1"
   }
 }
