@@ -1,23 +1,26 @@
 var $path = require('path');
 var $fs = require('fs');
 var $walkSync = require('walk-sync');
+var $assign = require('lodash/assign');
+var $htmlWebpackPlugin = require('html-webpack-plugin');
 
 function multiEntryResolve(webpackConfig, options){
 
-	var conf = {
+	var conf = $assign({
 		'entryPath' : './',
 		'rootPath' : process.cwd(),
+		'html' : null,
 		'filters' : [
 			function(file){
 				return $path.extname(file) === '.js';
 			}
 		]
-	};
+	}, options);
 
-	options = options || '';
-	conf.entryPath =  options.entryPath || conf.entryPath;
-	conf.rootPath = options.rootPath || conf.rootPath;
-	conf.filters = options.filters || conf.filters;
+	var htmlConf = $assign({
+		outputPath : 'html',
+		templatePath : ''
+	}, conf.html);
 
 	var includes = [];
 
@@ -42,6 +45,7 @@ function multiEntryResolve(webpackConfig, options){
 		return './' + val;
 	};
 
+	// 过滤文件列表
 	if(Array.isArray(conf.filters)){
 		conf.filters.forEach(function(fn){
 			if(typeof fn === 'function'){
@@ -50,6 +54,39 @@ function multiEntryResolve(webpackConfig, options){
 		});
 	}
 
+	// 获取html模板文件列表
+	var htmlFileMap = null;
+	var allowTypesMap = [
+		'htm',
+		'html',
+		'jade',
+		'handlebar',
+		'handlebars',
+		'ejs'
+	].reduce(function(map, type){
+		map['.' + type] = true;
+		return map;
+	}, {});
+
+	if(htmlConf.templatePath){
+		htmlFileMap = {};
+		var htmlFiles = $walkSync(htmlConf.templatePath, {
+			directories: false
+		});
+
+		htmlFiles.forEach(function(file){
+			var extname = $path.extname(file);
+			var basePath = $path.join(
+				$path.dirname(file),
+				$path.basename(file, extname)
+			);
+			if(allowTypesMap[extname]){
+				htmlFileMap[basePath] = file;
+			}
+		});
+	}
+
+	// 遍历入口文件列表配置 webpack
 	files.forEach(function(path){
 		path = $path.resolve(targetPath, path);
 		var key = getEntryKey(path);
@@ -61,6 +98,43 @@ function multiEntryResolve(webpackConfig, options){
 		}else{
 			webpackConfig.entry.push(val);
 		}
+
+		if(!htmlFileMap){return;}
+
+		// 如果有对应的html模板文件，则添加入口文件所匹配的模板
+		if(htmlFileMap[key]){
+			var htmlWebpackPluginOptions = {
+				// favicon路径，通过webpack引入同时可以生成hash值
+				// favicon: './src/img/favicon.ico',
+				//生成的html存放路径，相对于path
+				filename: $path.join(htmlConf.outputPath, htmlFileMap[key]),
+				//html模板路径
+				template: $path.join(htmlConf.templatePath, htmlFileMap[key]),
+				//js插入的位置，true/'head'/'body'/false
+				inject: 'body',
+				//为静态资源生成hash值
+				hash: false,
+				//需要引入的chunk，不配置就会引入所有页面的资源
+				chunks: [],
+				// 配置 chunksSortMode 为 none 以确保JS按照 chunks 里面的顺序加载
+				chunksSortMode: 'none',
+				//压缩HTML文件
+				minify: {
+					//移除HTML中的注释
+					removeComments: false,
+					//删除空白符与换行符
+					collapseWhitespace: false
+				}
+			};
+
+			htmlWebpackPluginOptions.chunks.push(key);
+
+			webpackConfig.plugins.push(
+				//HtmlWebpackPlugin，模板生成相关的配置，每个对于一个页面的配置，有几个写几个
+				new $htmlWebpackPlugin(htmlWebpackPluginOptions)
+			);
+		}
+
 	});
 
 	webpackConfig.context = conf.rootPath;

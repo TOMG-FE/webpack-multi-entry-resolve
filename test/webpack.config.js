@@ -22,7 +22,10 @@ var webpackConfig = {
 
 $webpackMultiEntryResolve(webpackConfig, {
 	rootPath : root,
-	entryPath : $path.join(root, 'entry')
+	entryPath : $path.join(root, 'entry'),
+	html : {
+		templatePath : $path.join(root, 'pages')
+	}
 });
 
 module.exports = webpackConfig;
