@@ -71,6 +71,24 @@ Type: `Array`
 ]
 ```
 
+#### options.html
+
+Type: `Object`
+
+html模板文件路径，用于配置htmlWebpackPlugin
+
+入口文件和html模板文件应该一一对应
+
+```js
+$webpackMultiEntryResolve(webpackConfig, {
+	rootPath : root,
+	entryPath : $path.join(root, 'entry'),
+	html : {
+		templatePath : $path.join(root, 'pages')
+	}
+});
+```
+
 ## Release History
 
  * 2016-10-08 v0.1.0 发布第一个正式版。
