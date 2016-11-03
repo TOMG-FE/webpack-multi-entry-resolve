@@ -20,6 +20,15 @@ var webpackConfig = {
 	plugins: []
 };
 
+webpackConfig.module.loaders.push({
+	//文件加载器，处理文件静态资源
+	test: /\.pug$/,
+	loader: 'pug',
+	query: {
+		pretty: true
+	}
+});
+
 $webpackMultiEntryResolve(webpackConfig, {
 	rootPath : root,
 	entryPath : $path.join(root, 'entry'),

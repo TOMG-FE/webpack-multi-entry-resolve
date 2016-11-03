@@ -60,6 +60,7 @@ function multiEntryResolve(webpackConfig, options){
 		'htm',
 		'html',
 		'jade',
+		'pug',
 		'handlebar',
 		'handlebars',
 		'ejs'
@@ -107,7 +108,7 @@ function multiEntryResolve(webpackConfig, options){
 				// favicon路径，通过webpack引入同时可以生成hash值
 				// favicon: './src/img/favicon.ico',
 				//生成的html存放路径，相对于path
-				filename: $path.join(htmlConf.outputPath, htmlFileMap[key]),
+				filename: $path.join(htmlConf.outputPath, key + '.html'),
 				//html模板路径
 				template: $path.join(htmlConf.templatePath, htmlFileMap[key]),
 				//js插入的位置，true/'head'/'body'/false
@@ -119,12 +120,7 @@ function multiEntryResolve(webpackConfig, options){
 				// 配置 chunksSortMode 为 none 以确保JS按照 chunks 里面的顺序加载
 				chunksSortMode: 'none',
 				//压缩HTML文件
-				minify: {
-					//移除HTML中的注释
-					removeComments: false,
-					//删除空白符与换行符
-					collapseWhitespace: false
-				}
+				minify: false
 			};
 
 			htmlWebpackPluginOptions.chunks.push(key);
