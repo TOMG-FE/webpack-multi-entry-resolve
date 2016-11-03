@@ -91,8 +91,9 @@ $webpackMultiEntryResolve(webpackConfig, {
 
 ## Release History
 
- * 2016-11-02 v0.1.1 实现与 htmlWebpackPlugin 的匹配。
- * 2016-10-08 v0.1.0 发布第一个正式版。
+ * 2016-11-03 v0.1.2 支持 pug 等模板引擎
+ * 2016-11-02 v0.1.1 实现与 htmlWebpackPlugin 的匹配
+ * 2016-10-08 v0.1.0 发布第一个正式版
 
 
 
