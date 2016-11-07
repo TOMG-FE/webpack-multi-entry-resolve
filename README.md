@@ -57,6 +57,12 @@ Type: `String`
 
 项目打包入口文件夹
 
+#### options.entryGlobs
+
+Type: `String` | `Array`
+
+项目打包入口文件选择器，参见 walk-sync 的 globs 选项
+
 #### options.filters
 
 Type: `Array`

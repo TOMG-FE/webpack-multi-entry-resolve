@@ -31,9 +31,13 @@ function multiEntryResolve(webpackConfig, options){
 	};
 
 	if(conf.entryGlobs){
-		entryWalkOptions.globs = conf.entryGlobs;
+		if(typeof conf.entryGlobs === 'string'){
+			entryWalkOptions.globs = [conf.entryGlobs];
+		}else if(Array.isArray(conf.entryGlobs)){
+			entryWalkOptions.globs = conf.entryGlobs;
+		}
 	}
-	
+
 	var files = $walkSync(targetPath, entryWalkOptions);
 
 	var getEntryKey = function(path){
