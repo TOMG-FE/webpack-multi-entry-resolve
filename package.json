@@ -22,6 +22,7 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "gulp-util": "^3.0.7",
     "pug": "^2.0.0-beta6",
     "pug-loader": "^2.3.0",
     "webpack": "^1.13.2"

@@ -7,10 +7,11 @@ var $htmlWebpackPlugin = require('html-webpack-plugin');
 function multiEntryResolve(webpackConfig, options){
 
 	var conf = $assign({
-		'entryPath' : './',
-		'rootPath' : process.cwd(),
-		'html' : null,
-		'filters' : [
+		entryPath : './',
+		entryGlobs : null,
+		rootPath : process.cwd(),
+		html : null,
+		filters : [
 			function(file){
 				return $path.extname(file) === '.js';
 			}
@@ -25,9 +26,15 @@ function multiEntryResolve(webpackConfig, options){
 	var includes = [];
 
 	var targetPath = conf.entryPath;
-	var files = $walkSync(targetPath, {
+	var entryWalkOptions = {
 		directories: false
-	});
+	};
+
+	if(conf.entryGlobs){
+		entryWalkOptions.globs = conf.entryGlobs;
+	}
+	
+	var files = $walkSync(targetPath, entryWalkOptions);
 
 	var getEntryKey = function(path){
 		var extname = $path.extname(path);
