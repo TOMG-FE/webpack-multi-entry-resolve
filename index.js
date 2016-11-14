@@ -1,5 +1,5 @@
-var $path = require('path');
 var $fs = require('fs');
+var $path = require('path');
 var $walkSync = require('walk-sync');
 var $assign = require('lodash/assign');
 var $htmlWebpackPlugin = require('html-webpack-plugin');
@@ -20,7 +20,8 @@ function multiEntryResolve(webpackConfig, options){
 
 	var htmlConf = $assign({
 		outputPath : 'html',
-		templatePath : ''
+		templatePath : '',
+		templateGlobs : null
 	}, conf.html);
 
 	var includes = [];
