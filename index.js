@@ -4,6 +4,16 @@ var $walkSync = require('walk-sync');
 var $assign = require('lodash/assign');
 var $htmlWebpackPlugin = require('html-webpack-plugin');
 
+function makeArray(item){
+	if(Array.isArray(item)){
+		return item;
+	}else if(item){
+		return [item];
+	}else{
+		return;
+	}
+}
+
 function multiEntryResolve(webpackConfig, options){
 
 	var conf = $assign({
@@ -21,7 +31,7 @@ function multiEntryResolve(webpackConfig, options){
 	var htmlConf = $assign({
 		outputPath : 'html',
 		templatePath : '',
-		templateGlobs : null
+		templateGlobs : '**/*.{htm,html,jade,pug,ejs,pug,handlebar,handlebars}'
 	}, conf.html);
 
 	var includes = [];
@@ -31,15 +41,10 @@ function multiEntryResolve(webpackConfig, options){
 		directories: false
 	};
 
-	if(conf.entryGlobs){
-		if(typeof conf.entryGlobs === 'string'){
-			entryWalkOptions.globs = [conf.entryGlobs];
-		}else if(Array.isArray(conf.entryGlobs)){
-			entryWalkOptions.globs = conf.entryGlobs;
-		}
-	}
-
-	var files = $walkSync(targetPath, entryWalkOptions);
+	var files = $walkSync(targetPath, {
+		directories: false,
+		globs : makeArray(conf.entryGlobs)
+	});
 
 	var getEntryKey = function(path){
 		var extname = $path.extname(path);
@@ -68,23 +73,12 @@ function multiEntryResolve(webpackConfig, options){
 
 	// 获取html模板文件列表
 	var htmlFileMap = null;
-	var allowTypesMap = [
-		'htm',
-		'html',
-		'jade',
-		'pug',
-		'handlebar',
-		'handlebars',
-		'ejs'
-	].reduce(function(map, type){
-		map['.' + type] = true;
-		return map;
-	}, {});
 
 	if(htmlConf.templatePath){
 		htmlFileMap = {};
 		var htmlFiles = $walkSync(htmlConf.templatePath, {
-			directories: false
+			directories: false,
+			globs: makeArray(htmlConf.templateGlobs)
 		});
 
 		htmlFiles.forEach(function(file){
@@ -93,9 +87,7 @@ function multiEntryResolve(webpackConfig, options){
 				$path.dirname(file),
 				$path.basename(file, extname)
 			);
-			if(allowTypesMap[extname]){
-				htmlFileMap[basePath] = file;
-			}
+			htmlFileMap[basePath] = file;
 		});
 	}
 
