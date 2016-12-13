@@ -100,9 +100,9 @@ $webpackMultiEntryResolve(webpackConfig, {
  * 2016-12-13 v0.1.5 修正 windows 环境下未能正确识别html路径的问题
  * 2016-11-16 v0.1.4 引入 html.templateGlobs 选项，可配置 html 文件类型，添加项目单元测试
  * 2016-11-07 v0.1.3 引入 entryGlobs 选项，方便过滤入口文件
- * 2016-11-03 v0.1.2 支持 pug 等模板引擎
- * 2016-11-02 v0.1.1 实现与 htmlWebpackPlugin 的匹配
- * 2016-10-08 v0.1.0 发布第一个正式版
+ * 2016-11-03 v0.1.2 支持 pug 等模板引擎
+ * 2016-11-02 v0.1.1 实现与 htmlWebpackPlugin 的匹配
+ * 2016-10-08 v0.1.0 发布第一个正式版
 
 
 
