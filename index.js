@@ -50,7 +50,6 @@ function multiEntryResolve(webpackConfig, options){
 		var extname = $path.extname(path);
 		var key = $path.relative(targetPath, path);
 		key = key.replace(new RegExp(extname + '$'), '');
-		key = key.replace(/\\+/g, '/');
 		return key;
 	};
 
@@ -58,7 +57,6 @@ function multiEntryResolve(webpackConfig, options){
 		var extname = $path.extname(path);
 		var val = $path.relative(conf.rootPath, path);
 		val = val.replace(new RegExp(extname + '$'), '');
-		val = val.replace(/\\+/g, '/');
 		return './' + val;
 	};
 
