@@ -1,7 +1,4 @@
-var $fs = require('fs');
 var $path = require('path');
-
-var $webpack = require('webpack');
 var $walkSync = require('walk-sync');
 var $htmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -24,7 +21,7 @@ var webpackConfig = {
 };
 
 webpackConfig.module.loaders.push({
-	//文件加载器，处理文件静态资源
+	// 文件加载器，处理文件静态资源
 	test: /\.pug$/,
 	loader: 'pug',
 	query: {
@@ -33,18 +30,23 @@ webpackConfig.module.loaders.push({
 });
 
 $webpackMultiEntryResolve(webpackConfig, {
-	rootPath : root,
-	entryPath : $path.join(root, 'entry'),
-	html : {
-		templatePath : $path.join(root, 'entry')
+	root: root,
+	path: $path.join(root, 'entry'),
+	globs: '**/*.js',
+	global: ['global/global'],
+	html: {
+		path: $path.join(root, 'entry')
+	},
+	mock: {
+		path: $path.join(root, 'mock')
 	}
 });
 
 webpackConfig.plugins.push(
 	new $htmlWebpackPlugin({
 		filename: 'index.html',
-		pages : $walkSync($path.join(root, 'entry'), {
-			globs : ['**/*.{html,pug}']
+		pages: $walkSync($path.join(root, 'entry'), {
+			globs: ['**/*.{html,pug}']
 		}),
 		template: $path.join(root, 'index.pug'),
 		inject: 'body',
@@ -54,5 +56,4 @@ webpackConfig.plugins.push(
 		minify: false
 	})
 );
-
 module.exports = webpackConfig;

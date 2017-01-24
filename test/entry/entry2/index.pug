@@ -1,9 +1,9 @@
-- pageTitle = "entry2"
+- var out = htmlWebpackPlugin.options.mock;
 doctype html
 html(lang="en")
 	head
-		title= pageTitle 
+		title= out.title 
 		script.
 			console.log("hi");
 		body
-			p.greeting Hello, World!
+			p.greeting= out.module.content
