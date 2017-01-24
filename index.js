@@ -1,85 +1,85 @@
-var $fs = require('fs');
 var $path = require('path');
 var $walkSync = require('walk-sync');
 var $assign = require('lodash/assign');
 var $htmlWebpackPlugin = require('html-webpack-plugin');
 
-function makeArray(item){
-	if(Array.isArray(item)){
+function makeArray(item) {
+	if (Array.isArray(item)) {
 		return item;
-	}else if(item){
+	} else if (item) {
 		return [item];
-	}else{
+	} else {
 		return;
 	}
 }
-
-function multiEntryResolve(webpackConfig, options){
+function multiEntryResolve(webpackConfig, options) {
 
 	var conf = $assign({
-		entryPath : './',
-		entryGlobs : null,
-		rootPath : process.cwd(),
-		html : null,
-		filters : [
-			function(file){
-				return $path.extname(file) === '.js';
-			}
-		]
+		debug: false,
+		path: './',
+		globs: null,
+		global: [],
+		root: process.cwd(),
+		html: null,
+		mock: null
 	}, options);
 
 	var htmlConf = $assign({
-		outputPath : 'html',
-		templatePath : '',
-		templateGlobs : '**/*.{htm,html,jade,pug,ejs,pug,handlebar,handlebars}'
+		output: 'html',
+		path: '',
+		globs: '**/*.{htm,html,jade,pug,ejs,pug,handlebar,handlebars}'
 	}, conf.html);
+
+	var mockConf = $assign({
+		path: '',
+		globs: '**/*.js'
+	}, conf.mock);
+
+	if (conf.debug) {
+		console.log('conf:\n', conf);
+		console.log('htmlConf:\n', htmlConf);
+		console.log('mockConf:\n', mockConf);
+	}
 
 	var includes = [];
 
-	var targetPath = conf.entryPath;
-	var entryWalkOptions = {
-		directories: false
-	};
+	var targetPath = conf.path;
 
 	var files = $walkSync(targetPath, {
 		directories: false,
-		globs : makeArray(conf.entryGlobs)
+		globs: makeArray(conf.globs)
 	});
 
-	var getEntryKey = function(path){
+	if (conf.debug) {
+		console.log('\nfiles:');
+		console.log(files);
+	}
+
+	var getEntryKey = function(path) {
 		var extname = $path.extname(path);
 		var key = $path.relative(targetPath, path);
 		key = key.replace(new RegExp(extname + '$'), '');
 		return key;
 	};
 
-	var getEntryVal = function(path){
+	var getEntryVal = function(path) {
 		var extname = $path.extname(path);
-		var val = $path.relative(conf.rootPath, path);
+		var val = $path.relative(conf.root, path);
 		val = val.replace(new RegExp(extname + '$'), '');
 		return './' + val;
 	};
 
-	// 过滤文件列表
-	if(Array.isArray(conf.filters)){
-		conf.filters.forEach(function(fn){
-			if(typeof fn === 'function'){
-				files = files.filter(fn);
-			}
-		});
-	}
-
 	// 获取html模板文件列表
 	var htmlFileMap = null;
 
-	if(htmlConf.templatePath){
+	if (htmlConf.path) {
 		htmlFileMap = {};
-		var htmlFiles = $walkSync(htmlConf.templatePath, {
+		var htmlFiles = $walkSync(htmlConf.path, {
 			directories: false,
-			globs: makeArray(htmlConf.templateGlobs)
+			globs: makeArray(htmlConf.globs)
 		});
 
-		htmlFiles.forEach(function(file){
+		htmlFiles.forEach(function(file) {
 			var extname = $path.extname(file);
 			var basePath = $path.join(
 				$path.dirname(file),
@@ -89,53 +89,100 @@ function multiEntryResolve(webpackConfig, options){
 		});
 	}
 
+	if (conf.debug) {
+		console.log('\nhtmlFileMap:');
+		console.log(htmlFileMap);
+	}
+
+	// 获取mock文件列表
+	var mockMap = null;
+	if (mockConf.path) {
+		mockMap = {};
+
+		var mockFiles = $walkSync(mockConf.path, {
+			directories: false,
+			globs: makeArray(mockConf.globs)
+		});
+
+		mockFiles.forEach(function(file) {
+			var extname = $path.extname(file);
+			var basePath = $path.join(
+				$path.dirname(file),
+				$path.basename(file, extname)
+			);
+			mockMap[basePath] = file;
+		});
+	}
+
+	if (conf.debug) {
+		console.log('\nmockMap:');
+		console.log(mockMap);
+	}
+
 	// 遍历入口文件列表配置 webpack
-	files.forEach(function(path){
+	files.forEach(function(path) {
 		path = $path.resolve(targetPath, path);
 		var key = getEntryKey(path);
 		var val = getEntryVal(path);
 		includes.push(key);
 
-		if(!Array.isArray(webpackConfig.entry)){
+		if (!Array.isArray(webpackConfig.entry)) {
 			webpackConfig.entry[key] = val;
-		}else{
+		} else {
 			webpackConfig.entry.push(val);
 		}
 
-		if(!htmlFileMap){return;}
+		if (!htmlFileMap) {
+			return;
+		}
 
 		// 如果有对应的html模板文件，则添加入口文件所匹配的模板
-		if(htmlFileMap[key]){
+		if (htmlFileMap[key]) {
 			var htmlWebpackPluginOptions = {
 				// favicon路径，通过webpack引入同时可以生成hash值
 				// favicon: './src/img/favicon.ico',
-				//生成的html存放路径，相对于path
-				filename: $path.join(htmlConf.outputPath, key + '.html'),
-				//html模板路径
-				template: $path.join(htmlConf.templatePath, htmlFileMap[key]),
-				//js插入的位置，true/'head'/'body'/false
+				// 生成的html存放路径，相对于path
+				filename: $path.join(htmlConf.output, key + '.html'),
+				// html模板路径
+				template: $path.join(htmlConf.path, htmlFileMap[key]),
+				// js插入的位置，true/'head'/'body'/false
 				inject: 'body',
-				//为静态资源生成hash值
+				// 为静态资源生成hash值
 				hash: false,
-				//需要引入的chunk，不配置就会引入所有页面的资源
+				// 需要引入的chunk，不配置就会引入所有页面的资源
 				chunks: [],
 				// 配置 chunksSortMode 为 none 以确保JS按照 chunks 里面的顺序加载
 				chunksSortMode: 'none',
-				//压缩HTML文件
+				// 压缩HTML文件
 				minify: false
 			};
 
+			if (Array.isArray(conf.global)) {
+				Array.prototype.push.apply(htmlWebpackPluginOptions.chunks, conf.global);
+			}
 			htmlWebpackPluginOptions.chunks.push(key);
 
+
+			if (mockMap && mockMap[key]) {
+				var mockFile = $path.join(mockConf.path, mockMap[key]);
+				var mockData = require(mockFile);
+				htmlWebpackPluginOptions.mock = mockData;
+			}
+
+			if (conf.debug) {
+				console.log('\n---- htmlWebpackPluginOptions:', key);
+				console.log(htmlWebpackPluginOptions);
+			}
+
 			webpackConfig.plugins.push(
-				//HtmlWebpackPlugin，模板生成相关的配置，每个对于一个页面的配置，有几个写几个
+				// HtmlWebpackPlugin，模板生成相关的配置，每个对于一个页面的配置，有几个写几个
 				new $htmlWebpackPlugin(htmlWebpackPluginOptions)
 			);
 		}
 
 	});
 
-	webpackConfig.context = conf.rootPath;
+	webpackConfig.context = conf.root;
 
 	return webpackConfig;
 

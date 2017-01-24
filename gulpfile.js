@@ -1,12 +1,8 @@
-var $fs = require('fs');
-var $path = require('path');
-
 var $del = require('del');
 var $gulp = require('gulp');
 var $gulpMocha = require('gulp-mocha');
 var $runSequence = require('run-sequence');
 var $gulpWebpack = require('gulp-webpack');
-var $webpackMultiEntryResolve = require('./index');
 
 var $webpackConfig = require('./test/webpack.config');
 
@@ -15,7 +11,6 @@ $gulp.task('clean', function() {
 });
 
 $gulp.task('webpack', function() {
-
 	return $gulp.src([
 		'entry/*.js'
 	], {

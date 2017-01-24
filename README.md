@@ -35,8 +35,8 @@ var webpackConfig = {
 };
 
 $webpackMultiEntryResolve(webpackConfig, {
-	rootPath : root,
-	entryPath : $path.join(root, 'entry')
+	root : root,
+	path : $path.join(root, 'entry')
 });
 
 module.exports = webpackConfig;
@@ -45,58 +45,95 @@ module.exports = webpackConfig;
 
 ## options
 
-#### options.rootPath
+#### options.debug
+
+Type: `Boolean`
+
+是否为调试模式，开启调试模式会在控制台输出流程数据
+
+#### options.root
 
 Type: `String`
 
 项目打包目录根路径
 
-#### options.entryPath
+#### options.path
 
 Type: `String`
 
 项目打包入口文件夹
 
-#### options.entryGlobs
+#### options.globs
 
 Type: `String` | `Array`
 
 项目打包入口文件选择器，参见 walk-sync 的 globs 选项
 
-#### options.filters
+#### options.global
 
 Type: `Array`
 
-文件过滤器，为过滤函数数组，默认过滤器为
-
-```js
-[
-	function(file){
-		return $path.extname(file) === '.js';
-	}
-]
-```
+公共文件 entry 名称，会插入到 htmlWebpackPlugin.options.chunks
 
 #### options.html
 
 Type: `Object`
 
-html模板文件路径，用于配置htmlWebpackPlugin
+html模板文件选项，用于配置htmlWebpackPlugin
 
-入口文件和html模板文件应该一一对应
+html模板文件和入口文件，其相对path的路径应该一一对应
 
 ```js
 $webpackMultiEntryResolve(webpackConfig, {
-	rootPath : root,
-	entryPath : $path.join(root, 'entry'),
+	root : root,
+	path : $path.join(root, 'entry'),
 	html : {
-		templatePath : $path.join(root, 'pages')
+		path : $path.join(root, 'pages')
 	}
 });
 ```
 
+#### options.html.output
+
+Type: `String`
+
+html模板的输出路径，默认为 'html'
+
+#### options.html.path
+
+Type: `String`
+
+html模板文件所在路径
+
+#### options.html.globs
+
+Type: `String`
+
+用于筛选 html 模板文件
+
+#### options.mock
+
+Type: `Object`
+
+配置模拟数据的选项，mock数据会被加载 htmlWebpackPlugin.options.mock
+
+模拟文件和入口文件，其相对path的路径应该一一对应
+
+#### options.mock.path
+
+Type: `String`
+
+模拟数据文件所在路径
+
+#### options.mock.globs
+
+Type: `String`
+
+用于筛选模拟数据文件
+
 ## Release History
 
+ * 2017-01-24 v0.2.0 变更选项参数名称，引入mock数据管理
  * 2016-12-13 v0.1.5 修正 windows 环境下未能正确识别html路径的问题
  * 2016-11-16 v0.1.4 引入 html.templateGlobs 选项，可配置 html 文件类型，添加项目单元测试
  * 2016-11-07 v0.1.3 引入 entryGlobs 选项，方便过滤入口文件
