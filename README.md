@@ -133,6 +133,7 @@ Type: `String`
 
 ## Release History
 
+ * 2017-02-04 v0.2.1 修正未能引用到外部 mock entry file 的问题
  * 2017-01-24 v0.2.0 变更选项参数名称，引入mock数据管理
  * 2016-12-13 v0.1.5 修正 windows 环境下未能正确识别html路径的问题
  * 2016-11-16 v0.1.4 引入 html.templateGlobs 选项，可配置 html 文件类型，添加项目单元测试
