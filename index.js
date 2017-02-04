@@ -165,6 +165,8 @@ function multiEntryResolve(webpackConfig, options) {
 
 			if (mockMap && mockMap[key]) {
 				var mockFile = $path.join(mockConf.path, mockMap[key]);
+				mockFile = $path.resolve(mockFile);
+
 				var mockData = require(mockFile);
 				htmlWebpackPluginOptions.mock = mockData;
 			}
