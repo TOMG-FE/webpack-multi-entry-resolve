@@ -21,7 +21,8 @@ function multiEntryResolve(webpackConfig, options) {
 		global: [],
 		root: process.cwd(),
 		html: null,
-		mock: null
+		mock: null,
+		htmlWebpackPlugin: {}
 	}, options);
 
 	var htmlConf = $assign({
@@ -138,13 +139,7 @@ function multiEntryResolve(webpackConfig, options) {
 
 		// 如果有对应的html模板文件，则添加入口文件所匹配的模板
 		if (htmlFileMap[key]) {
-			var htmlWebpackPluginOptions = {
-				// favicon路径，通过webpack引入同时可以生成hash值
-				// favicon: './src/img/favicon.ico',
-				// 生成的html存放路径，相对于path
-				filename: $path.join(htmlConf.output, key + '.html'),
-				// html模板路径
-				template: $path.join(htmlConf.path, htmlFileMap[key]),
+			var htmlWebpackPluginOptions = $assign({
 				// js插入的位置，true/'head'/'body'/false
 				inject: 'body',
 				// 为静态资源生成hash值
@@ -155,7 +150,15 @@ function multiEntryResolve(webpackConfig, options) {
 				chunksSortMode: 'none',
 				// 压缩HTML文件
 				minify: false
-			};
+			}, conf.htmlWebpackPlugin);
+
+			// favicon路径，通过webpack引入同时可以生成hash值
+			// favicon: './src/img/favicon.ico',
+			// 生成的html存放路径，相对于path
+			htmlWebpackPluginOptions.filename = $path.join(htmlConf.output, key + '.html');
+
+			// html模板路径
+			htmlWebpackPluginOptions.template = $path.join(htmlConf.path, htmlFileMap[key]);
 
 			if (Array.isArray(conf.global)) {
 				Array.prototype.push.apply(htmlWebpackPluginOptions.chunks, conf.global);

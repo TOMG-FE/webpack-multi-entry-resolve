@@ -131,8 +131,15 @@ Type: `String`
 
 用于筛选模拟数据文件
 
+#### options.htmlWebpackPlugin
+
+Type: `Object`
+
+用于配置 htmlWebpackPlugin 的公共选项
+
 ## Release History
 
+ * 2017-02-06 v0.2.2 允许配置 htmlWebpackPlugin 公共选项
  * 2017-02-04 v0.2.1 修正未能引用到外部 mock entry file 的问题
  * 2017-01-24 v0.2.0 变更选项参数名称，引入mock数据管理
  * 2016-12-13 v0.1.5 修正 windows 环境下未能正确识别html路径的问题
