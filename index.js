@@ -15,13 +15,32 @@ function makeArray(item) {
 function multiEntryResolve(webpackConfig, options) {
 
 	var conf = $assign({
+
+		// 开启调试模式，会打出日志
 		debug: false,
+
+		// 入口文件路径
 		path: './',
+
+		// 入口文件筛选
 		globs: null,
+
+		// 引用的公共文件
 		global: [],
+
+		// 是否自动追加 js entry
+		autoChunks: true,
+
+		// 项目根目录
 		root: process.cwd(),
+
+		// html 文件选项
 		html: null,
+
+		// mock 文件选项
 		mock: null,
+
+		// htmlWebpackPlugin 的配置
 		htmlWebpackPlugin: {}
 	}, options);
 
@@ -137,6 +156,10 @@ function multiEntryResolve(webpackConfig, options) {
 			return;
 		}
 
+		if (conf.htmlWebpackPlugin === false) {
+			return;
+		}
+
 		// 如果有对应的html模板文件，则添加入口文件所匹配的模板
 		if (htmlFileMap[key]) {
 			var htmlWebpackPluginOptions = $assign({
@@ -160,12 +183,15 @@ function multiEntryResolve(webpackConfig, options) {
 			// html模板路径
 			htmlWebpackPluginOptions.template = $path.join(htmlConf.path, htmlFileMap[key]);
 
-			if (Array.isArray(conf.global)) {
-				Array.prototype.push.apply(htmlWebpackPluginOptions.chunks, conf.global);
+			// 默认自动追加 entry 文件
+			if (conf.autoChunks) {
+				if (Array.isArray(conf.global)) {
+					Array.prototype.push.apply(htmlWebpackPluginOptions.chunks, conf.global);
+				}
+				htmlWebpackPluginOptions.chunks.push(key);
 			}
-			htmlWebpackPluginOptions.chunks.push(key);
 
-
+			// 获取 mock 数据
 			if (mockMap && mockMap[key]) {
 				var mockFile = $path.join(mockConf.path, mockMap[key]);
 				mockFile = $path.resolve(mockFile);

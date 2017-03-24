@@ -49,11 +49,15 @@ module.exports = webpackConfig;
 
 Type: `Boolean`
 
+Default: false
+
 是否为调试模式，开启调试模式会在控制台输出流程数据
 
 #### options.root
 
 Type: `String`
+
+Default: process.cwd()
 
 项目打包目录根路径
 
@@ -61,17 +65,23 @@ Type: `String`
 
 Type: `String`
 
+Default: './'
+
 项目打包入口文件夹
 
 #### options.globs
 
 Type: `String` | `Array`
 
+Default: null
+
 项目打包入口文件选择器，参见 walk-sync 的 globs 选项
 
 #### options.global
 
 Type: `Array`
+
+Default: []
 
 公共文件 entry 名称，会插入到 htmlWebpackPlugin.options.chunks
 
@@ -97,11 +107,15 @@ $webpackMultiEntryResolve(webpackConfig, {
 
 Type: `String`
 
+Default: 'html'
+
 html模板的输出路径，默认为 'html'
 
 #### options.html.path
 
 Type: `String`
+
+Default: ''
 
 html模板文件所在路径
 
@@ -109,7 +123,17 @@ html模板文件所在路径
 
 Type: `String`
 
+Default: '**/*.{htm,html,jade,pug,ejs,pug,handlebar,handlebars}'
+
 用于筛选 html 模板文件
+
+#### options.autoChunks
+
+Type: `Boolean`
+
+Default: true
+
+是否自动追加 entry file 到 htmlWebpackPlugin.options.chunks
 
 #### options.mock
 
@@ -123,11 +147,15 @@ Type: `Object`
 
 Type: `String`
 
+Default: ''
+
 模拟数据文件所在路径
 
 #### options.mock.globs
 
 Type: `String`
+
+Default: '**/*.js'
 
 用于筛选模拟数据文件
 
@@ -135,10 +163,13 @@ Type: `String`
 
 Type: `Object`
 
+Default: {}
+
 用于配置 htmlWebpackPlugin 的公共选项
 
 ## Release History
 
+ * 2017-03-24 v0.2.3 添加选项 autoChunks
  * 2017-02-06 v0.2.2 允许配置 htmlWebpackPlugin 公共选项
  * 2017-02-04 v0.2.1 修正未能引用到外部 mock entry file 的问题
  * 2017-01-24 v0.2.0 变更选项参数名称，引入mock数据管理
