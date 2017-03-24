@@ -63,17 +63,17 @@ Default: process.cwd()
 
 #### options.path
 
-Type: `String`
+Type: `String` __required__
 
-Default: './'
+Default: 'entry'
 
-项目打包入口文件夹
+项目打包入口文件夹路径
 
 #### options.globs
 
 Type: `String` | `Array`
 
-Default: null
+Default: '**/*.js'
 
 项目打包入口文件选择器，参见 walk-sync 的 globs 选项
 

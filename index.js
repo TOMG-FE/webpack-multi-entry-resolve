@@ -20,10 +20,10 @@ function multiEntryResolve(webpackConfig, options) {
 		debug: false,
 
 		// 入口文件路径
-		path: './',
+		path: 'entry',
 
 		// 入口文件筛选
-		globs: null,
+		globs: '**/*.js',
 
 		// 引用的公共文件
 		global: [],
