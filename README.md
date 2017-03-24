@@ -170,6 +170,7 @@ Default: {}
 
 ## Release History
 
+ * 2017-03-24 v0.2.4 完善默认配置
  * 2017-03-24 v0.2.3 添加选项 autoChunks
  * 2017-02-06 v0.2.2 允许配置 htmlWebpackPlugin 公共选项
  * 2017-02-04 v0.2.1 修正未能引用到外部 mock entry file 的问题

@@ -1,6 +1,6 @@
 {
   "name": "webpack-multi-entry-resolve",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "webpack多入口文件处理",
   "main": "index.js",
   "scripts": {
