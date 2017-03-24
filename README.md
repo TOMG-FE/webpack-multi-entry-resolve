@@ -35,8 +35,9 @@ var webpackConfig = {
 };
 
 $webpackMultiEntryResolve(webpackConfig, {
-	root : root,
-	path : $path.join(root, 'entry')
+	root: root,
+	path: $path.join(root, 'entry'),
+	globs: '**/*.js'
 });
 
 module.exports = webpackConfig;
