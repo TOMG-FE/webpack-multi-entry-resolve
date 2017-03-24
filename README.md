@@ -62,9 +62,9 @@ Default: process.cwd()
 
 项目打包目录根路径
 
-#### options.path
+#### options.path (__required__)
 
-Type: `String` __required__
+Type: `String`
 
 Default: 'entry'
 
