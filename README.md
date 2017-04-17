@@ -170,6 +170,7 @@ Default: {}
 
 ## Release History
 
+ * 2017-04-17 v0.2.5 通过 mockjs 渲染 mock 数据
  * 2017-03-24 v0.2.4 完善默认配置
  * 2017-03-24 v0.2.3 添加选项 autoChunks
  * 2017-02-06 v0.2.2 允许配置 htmlWebpackPlugin 公共选项

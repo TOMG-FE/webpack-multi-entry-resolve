@@ -48,6 +48,16 @@ describe('files', function() {
 		$chai.expect(entry2html).to.contain('titleForM1');
 	});
 
+	it('通过 mockjs 生成 mock 数据', function() {
+		var entry2html = $fs.readFileSync('./test/dist/html/entry2/index.html', 'utf8');
+		var length = 0;
+		entry2html.replace(/<li>name<\/li>/g, function(str) {
+			length++;
+			return str;
+		});
+		$chai.expect(length).to.equal(10);
+	});
+
 	it('mock数据支持模块化', function() {
 		var entry2html = $fs.readFileSync('./test/dist/html/entry2/index.html', 'utf8');
 		$chai.expect(entry2html).to.contain('Hello M1!');

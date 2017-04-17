@@ -7,3 +7,6 @@ html(lang="en")
 			console.log("hi");
 		body
 			p.greeting= out.module.content
+			ul
+				each item in out.module.list
+					li #{item.name}

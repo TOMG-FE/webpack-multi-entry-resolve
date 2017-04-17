@@ -1,4 +1,5 @@
 var $path = require('path');
+var $mock = require('mockjs');
 var $walkSync = require('walk-sync');
 var $assign = require('lodash/assign');
 var $htmlWebpackPlugin = require('html-webpack-plugin');
@@ -197,6 +198,7 @@ function multiEntryResolve(webpackConfig, options) {
 				mockFile = $path.resolve(mockFile);
 
 				var mockData = require(mockFile);
+				mockData = $mock.mock(mockData);
 				htmlWebpackPluginOptions.mock = mockData;
 			}
 
